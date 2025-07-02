@@ -3,47 +3,93 @@ import '../../core/constants.dart';
 import '../models/user.dart';
 
 class AuthService {
-  static final Dio _dio = Dio(BaseOptions(
-    baseUrl: AppConstants.baseUrl,
-    connectTimeout: const Duration(seconds: 10),
-    receiveTimeout: const Duration(seconds: 10),
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    },
-  ));
+  static final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: AppConstants.baseUrl,
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    ),
+  );
+
+  Future<Map<String, dynamic>> register(
+    String username,
+    String email,
+    String firstName,
+    String lastName,
+    String phoneNumber,
+    String password,
+    String confirmPassword,
+  ) async {
+    try {
+      Object data =  {
+          'username': username,
+          'email': email,
+          'first_name': firstName,
+          'last_name': lastName,
+          'phone_number': phoneNumber,
+          'role': 'customer',
+          'password_confirm': confirmPassword,
+          'password': password,
+        };
+
+      final response = await _dio.post(
+        AppConstants.register,
+        data: data,
+      );
+      final responseData = response.data;
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        // Registration successful
+        return {
+          'success': true,
+          'data': responseData,
+          'message': responseData['message'] ?? 'Registration successful',
+        };
+      } else {
+        return {
+          'success': false,
+          'error': responseData['message'] ?? 'Registration failed',
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'error': 'Network error: ${e.toString()}'};
+    }
+  }
 
   // Initialize Dio with interceptors for logging and error handling
   static void initializeDio({String? token}) {
     _dio.interceptors.clear();
-    _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
-        // Add auth token if available
-        if (token != null) {
-          options.headers['Authorization'] = 'Bearer $token';
-        }
-        return handler.next(options);
-      },
-      onError: (DioException error, handler) {
-        // Handle common error scenarios
-        if (error.response?.statusCode == 401) {
-          // Handle unauthorized access
-          throw Exception('Unauthorized access. Please login again.');
-        }
-        return handler.next(error);
-      },
-    ));
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          // Add auth token if available
+          if (token != null) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+          return handler.next(options);
+        },
+        onError: (DioException error, handler) {
+          // Handle common error scenarios
+          if (error.response?.statusCode == 401) {
+            // Handle unauthorized access
+            throw Exception('Unauthorized access. Please login again.');
+          }
+          return handler.next(error);
+        },
+      ),
+    );
   }
 
   // Login user
-  static Future<User> login(String email, String password) async {
+  static Future<User> login(String username, String password) async {
     try {
       final response = await _dio.post(
         AppConstants.login,
-        data: {
-          'email': email,
-          'password': password,
-        },
+        data: {'username': username, 'password': password},
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -56,15 +102,16 @@ class AuthService {
       }
     } on DioException catch (e) {
       String errorMessage = 'An error occurred during login';
-      
+
       if (e.response?.data != null && e.response?.data['detail'] != null) {
         errorMessage = e.response?.data['detail'];
       } else if (e.type == DioExceptionType.connectionTimeout) {
-        errorMessage = 'Connection timeout. Please check your internet connection.';
+        errorMessage =
+            'Connection timeout. Please check your internet connection.';
       } else if (e.type == DioExceptionType.receiveTimeout) {
         errorMessage = 'Server is not responding. Please try again later.';
       }
-      
+
       throw Exception(errorMessage);
     } catch (e) {
       throw Exception('An unexpected error occurred: ${e.toString()}');
@@ -86,7 +133,7 @@ class AuthService {
   static Future<User> getProfile() async {
     try {
       final response = await _dio.get(AppConstants.profile);
-      
+
       if (response.statusCode == 200) {
         return User.fromJson(response.data);
       } else {
@@ -104,7 +151,7 @@ class AuthService {
         AppConstants.updateProfile,
         data: profileData,
       );
-      
+
       if (response.statusCode == 200) {
         return User.fromJson(response.data);
       } else {

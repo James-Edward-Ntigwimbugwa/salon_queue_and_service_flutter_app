@@ -7,11 +7,18 @@ class AuthProvider extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
 
+  // Set error message
+  void _setError(String? error) {
+    _errorMessage = error;
+    notifyListeners();
+  }
+
   // Getters
   User? get user => _user;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isAuthenticated => _user != null;
+  final AuthService _authService = AuthService();
 
   // Reset error message
   void _resetError() {
@@ -26,17 +33,55 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // Login
-  Future<bool> login(String email, String password) async {
+  Future<bool> login(String username, String password) async {
     _resetError();
     _setLoading(true);
 
     try {
-      final userData = await AuthService.login(email, password);
+      final userData = await AuthService.login(username, password);
       _user = userData;
       _setLoading(false);
       return true;
     } catch (e) {
       _errorMessage = e.toString();
+      _setLoading(false);
+      return false;
+    }
+  }
+
+  Future<bool> register(
+    String username,
+    String email,
+    String firstName,
+    String lastName,
+    String phoneNumber,
+    String password,
+    String confirmPassword,
+  ) async {
+    _setLoading(true);
+    _setError(null);
+
+    try {
+      final result = await _authService.register(
+        username,
+        email,
+        firstName,
+        lastName,
+        phoneNumber,
+        password,
+        confirmPassword,
+      );
+
+      if (result['success']) {
+        _setLoading(false);
+        return true;
+      } else {
+        _setError(result['error']);
+        _setLoading(false);
+        return false;
+      }
+    } catch (e) {
+      _setError('An unexpected error occurred');
       _setLoading(false);
       return false;
     }
@@ -62,7 +107,7 @@ class AuthProvider extends ChangeNotifier {
   // Get Profile
   Future<bool> fetchProfile() async {
     if (!isAuthenticated) return false;
-    
+
     _resetError();
     _setLoading(true);
 

@@ -4,7 +4,7 @@ import '../../data/providers/auth_provider.dart';
 import '../widgets/custom_button.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -12,13 +12,13 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _handleLogin() async {
     if (_formKey.currentState?.validate() ?? false) {
       final success = await context.read<AuthProvider>().login(
-        _emailController.text.trim(),
+        _usernameController.text.trim(),
         _passwordController.text.trim(),
       );
 
@@ -44,13 +44,10 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
+            gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Colors.blue.shade50,
-              Colors.white,
-            ],
+            colors: [Colors.blue.shade50, Colors.white],
           ),
         ),
         child: SafeArea(
@@ -58,7 +55,9 @@ class _LoginScreenState extends State<LoginScreen> {
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24.0),
               child: Container(
-                constraints: BoxConstraints(maxWidth: size.width > 400 ? 400 : size.width),
+                constraints: BoxConstraints(
+                  maxWidth: size.width > 400 ? 400 : size.width,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -72,7 +71,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 24),
                     Text(
                       'Welcome to SalonX',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      style: Theme.of(
+                        context,
+                      ).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       ),
@@ -81,9 +82,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 8),
                     Text(
                       'Sign in to continue',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Colors.black54,
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyLarge?.copyWith(color: Colors.black54),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),
@@ -96,20 +97,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           // Email Field
                           TextFormField(
-                            controller: _emailController,
+                            controller: _usernameController,
                             keyboardType: TextInputType.emailAddress,
                             decoration: CustomInputDecoration.get(
-                              labelText: 'Email',
+                              labelText: 'Username',
                               hintText: 'Enter your email',
                               prefixIcon: Icons.email_outlined,
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your email';
-                              }
-                              if (!value.contains('@')) {
-                                return 'Please enter a valid email';
-                              }
+                                return 'Please enter your username';
+                              }                           
                               return null;
                             },
                           ),

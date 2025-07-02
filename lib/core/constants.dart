@@ -1,6 +1,6 @@
 class AppConstants {
   // Base URL for API
-  static const String baseUrl = "https://api.example.com";
+  static const String baseUrl = "http://localhost:8000";
 
   // Authentication Endpoints
   static const String login = "/api/accounts/login/";
@@ -20,7 +20,8 @@ class AppConstants {
 
   // Notifications Endpoints
   static const String notifications = "/api/notifications/";
-  static const String notificationPreferences = "/api/notifications/preferences/";
+  static const String notificationPreferences =
+      "/api/notifications/preferences/";
 
   // Payments Endpoints
   static const String payments = "/api/payments/";

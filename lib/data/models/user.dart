@@ -21,12 +21,7 @@ class User {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'email': email,
-      'full_name': fullName,
-      'token': token,
-    };
+    return {'id': id, 'email': email, 'full_name': fullName, 'token': token};
   }
 
   @override
@@ -34,12 +29,7 @@ class User {
     return 'User(id: $id, email: $email, fullName: $fullName)';
   }
 
-  User copyWith({
-    int? id,
-    String? email,
-    String? fullName,
-    String? token,
-  }) {
+  User copyWith({int? id, String? email, String? fullName, String? token}) {
     return User(
       id: id ?? this.id,
       email: email ?? this.email,

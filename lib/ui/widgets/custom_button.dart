@@ -13,7 +13,7 @@ class CustomButton extends StatelessWidget {
   final IconData? icon;
 
   const CustomButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.isLoading = false,
@@ -24,12 +24,12 @@ class CustomButton extends StatelessWidget {
     this.borderRadius = 8,
     this.padding = const EdgeInsets.symmetric(horizontal: 16),
     this.icon,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return SizedBox(
       width: width ?? double.infinity,
       height: height,
@@ -44,32 +44,33 @@ class CustomButton extends StatelessWidget {
           ),
           elevation: 2,
         ),
-        child: isLoading
-            ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (icon != null) ...[
-                    Icon(icon, size: 20),
-                    const SizedBox(width: 8),
-                  ],
-                  Text(
-                    text,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                    ),
+        child:
+            isLoading
+                ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
-                ],
-              ),
+                )
+                : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (icon != null) ...[
+                      Icon(icon, size: 20),
+                      const SizedBox(width: 8),
+                    ],
+                    Text(
+                      text,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
       ),
     );
   }
