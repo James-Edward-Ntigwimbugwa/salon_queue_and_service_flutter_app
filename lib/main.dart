@@ -1,9 +1,8 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:salon_queue_and_service_flutter_app/ui/screens/register_screen.dart';
+import 'core/routes.dart';
 import 'data/providers/auth_provider.dart';
-import 'ui/screens/login_screen.dart';
 
 void main() {
   runApp(
@@ -28,58 +27,83 @@ class SalonXApp extends StatelessWidget {
         title: 'SalonX',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          brightness: Brightness.dark,
+          scaffoldBackgroundColor: Colors.black,
+          primaryColor: Colors.white,
+          colorScheme: const ColorScheme.dark(
+            primary: Colors.white,
+            secondary: Colors.white,
+            surface: Colors.black,
+            background: Colors.black,
+          ),
           useMaterial3: true,
           // Input Decoration Theme
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
-            fillColor: Colors.grey[50],
+            fillColor: Colors.grey.shade900,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Colors.grey),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.blue.shade400, width: 2),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Colors.white, width: 1),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.red.shade300),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.red.shade400),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.red.shade400, width: 2),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.red.shade400, width: 1),
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 16,
             ),
+            labelStyle: const TextStyle(color: Colors.white),
+            hintStyle: TextStyle(color: Colors.grey.shade600),
           ),
           // Elevated Button Theme
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              elevation: 2,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              foregroundColor: Colors.black,
+              backgroundColor: Colors.white,
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),
+          // Text Theme
+          textTheme: const TextTheme(
+            headlineLarge: TextStyle(
+              color: Colors.white,
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+            ),
+            headlineMedium: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+            bodyLarge: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
+            bodyMedium: TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+            ),
+          ),
         ),
-        home: const LoginScreen(),
-        routes: {
-          '/login': (context) => const LoginScreen(),
-          // Add other routes here
-          '/home':
-              (context) => const Scaffold(
-                body: Center(child: Text('Home Screen - To be implemented')),
-              ),
-          '/register': (context) => RegisterScreen(),
-        },
+        initialRoute: Routes.splash,
+        onGenerateRoute: Routes.generateRoute,
       ),
     );
   }
